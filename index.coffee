@@ -1,5 +1,7 @@
+# Dependencies
 _ = require('lodash')
 Waterline = require('waterline')
+
 # Require any waterline compatible adapters here
 memoryAdapter = require('sails-memory')
 diskAdapter = require('sails-disk')
@@ -32,13 +34,6 @@ waterlineLoader = def.Module ->
       memory:
         adapter: 'memory'
 
-      testMysqlServer:
-        adapter: 'sails-mysql',
-        host: 'localhost',
-        user: 'root',
-        password: '',
-        database: 'test_artnexus'
-
       localDiskDb:
         adapter: 'sails-disk'
 
@@ -52,10 +47,14 @@ waterlineLoader = def.Module ->
 
   namesHashMap = {}
 
-  @init = (models, done)->
-  ####################################
-  # START WATERLINE
-  ####################################
+  @init = (options = {}, done)->
+    models = options.models
+    delete options.models
+    config = _.extend(config, options)
+
+    ####################################
+    # START WATERLINE
+    ####################################
     _loadModels(models)
 
     # Start Waterline passing adapters in
@@ -74,15 +73,22 @@ waterlineLoader = def.Module ->
 
     @teardown = (done)->
       console.log 'WaterlineLoader: tearing down...'
-      do async ->
-        # Db Clean up
-        for modelName, model of loadedModels
-          await model.destroy()
-        orm.teardown(done)
+      # This method calls itself until all models are destroyed
+      _destroyModel(loadedModels, _.keys(loadedModels), done)
+
+
+    _destroyModel = (models, modelNamesArray, done)->
+      models[modelNamesArray.pop()].destroy().then =>
+        if modelNamesArray.length is 0
+          orm.teardown(done)
+        else
+          _destroyModel(models, modelNamesArray, done)
 
     _loadModels = (models)->
       for model in models
-        modelDefinition = require("#{CWD}/api/models/#{model.fileName}")
+        # Models can be simple strings entries in the array, or objects
+        modelFileName = if _.isString(model) then model else model.fileName
+        modelDefinition = require("#{CWD}/api/models/#{modelFileName}")
 
         # Useful if sails models were define via commonjs-injector
         if _.isFunction(modelDefinition)
@@ -91,7 +97,7 @@ waterlineLoader = def.Module ->
           else
             modelDefinition = modelDefinition()
 
-        _loadModelIntoCollection(name: model.fileName, definition: modelDefinition)
+        _loadModelIntoCollection(name: modelFileName, definition: modelDefinition)
       return this
 
     _loadModelIntoCollection = (model)->
