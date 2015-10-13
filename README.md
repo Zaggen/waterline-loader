@@ -4,7 +4,7 @@ A module to load waterline Collections and turn them into globals, mainly for un
 
 ### Usage Example (CoffeeScript)
 
-waterlineLoader = require('./waterlineLoader')
+waterlineLoader = require('waterlineLoader')
 ```coffee
 # test/mochaBootstrap.coffee
 
