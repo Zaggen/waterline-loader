@@ -72,41 +72,41 @@ waterlineLoader = def.Module ->
           global[_getOriginalName(lowerCaseName)] = model
       done()
 
-    @teardown = (done)->
-      console.log 'WaterlineLoader: tearing down...'
-      # This method calls itself until all models are destroyed
-      _destroyModel(loadedModels, _.keys(loadedModels), done)
+  @teardown = (done)->
+    console.log 'WaterlineLoader: tearing down...'
+    # This method calls itself until all models are destroyed
+    _destroyModel(loadedModels, _.keys(loadedModels), done)
 
 
-    _destroyModel = (models, modelNamesArray, done)->
-      models[modelNamesArray.pop()].destroy().then =>
-        if modelNamesArray.length is 0
-          orm.teardown(done)
+  _destroyModel = (models, modelNamesArray, done)->
+    models[modelNamesArray.pop()].destroy().then =>
+      if modelNamesArray.length is 0
+        orm.teardown(done)
+      else
+        _destroyModel(models, modelNamesArray, done)
+
+  _loadModels = (models)->
+    for model in models
+      # Models can be simple strings entries in the array, or objects
+      modelFileName = if _.isString(model) then model else model.fileName
+      modelDefinition = require("#{CWD}/api/models/#{modelFileName}")
+
+      # Useful if sails models were define via commonjs-injector
+      if _.isFunction(modelDefinition)
+        if model.afterLoadFilter?
+          modelDefinition = model.afterLoadFilter(modelDefinition)
         else
-          _destroyModel(models, modelNamesArray, done)
+          modelDefinition = modelDefinition()
 
-    _loadModels = (models)->
-      for model in models
-        # Models can be simple strings entries in the array, or objects
-        modelFileName = if _.isString(model) then model else model.fileName
-        modelDefinition = require("#{CWD}/api/models/#{modelFileName}")
+      _loadModelIntoCollection(name: modelFileName, definition: modelDefinition)
+    return this
 
-        # Useful if sails models were define via commonjs-injector
-        if _.isFunction(modelDefinition)
-          if model.afterLoadFilter?
-            modelDefinition = model.afterLoadFilter(modelDefinition)
-          else
-            modelDefinition = modelDefinition()
+  _loadModelIntoCollection = (model)->
+    waterlineModel = _.defaults(model.definition, {identity: model.name, tableName: model.name}, defaultModel)
+    waterlineCollection = Waterline.Collection.extend(waterlineModel)
+    orm.loadCollection(waterlineCollection)
+    namesHashMap[model.name.toLowerCase()] = model.name
 
-        _loadModelIntoCollection(name: modelFileName, definition: modelDefinition)
-      return this
-
-    _loadModelIntoCollection = (model)->
-      waterlineModel = _.defaults(model.definition, {identity: model.name, tableName: model.name}, defaultModel)
-      waterlineCollection = Waterline.Collection.extend(waterlineModel)
-      orm.loadCollection(waterlineCollection)
-      namesHashMap[model.name.toLowerCase()] = model.name
-
-    _getOriginalName = (lowerCaseName)-> namesHashMap[lowerCaseName]
+  _getOriginalName = (lowerCaseName)-> namesHashMap[lowerCaseName]
 
 module.exports = waterlineLoader

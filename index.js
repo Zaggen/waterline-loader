@@ -21,7 +21,7 @@
   CWD = process.cwd();
 
   waterlineLoader = def.Module(function() {
-    var config, defaultModel, namesHashMap;
+    var _destroyModel, _getOriginalName, _loadModelIntoCollection, _loadModels, config, defaultModel, namesHashMap;
     config = {
       adapters: {
         'default': memoryAdapter,
@@ -45,8 +45,8 @@
       connection: 'testMysqlServer'
     };
     namesHashMap = {};
-    return this.init = function(options, done) {
-      var _destroyModel, _getOriginalName, _loadModelIntoCollection, _loadModels, models;
+    this.init = function(options, done) {
+      var models;
       if (options == null) {
         options = {};
       }
@@ -54,7 +54,7 @@
       delete options.models;
       config = _.extend(config, options);
       _loadModels(models);
-      orm.initialize(config, function(err, orm) {
+      return orm.initialize(config, function(err, orm) {
         var lowerCaseName, model, ref;
         console.log('WaterlineLoader: Initializing ORM');
         if (err) {
@@ -70,54 +70,54 @@
         }
         return done();
       });
-      this.teardown = function(done) {
-        console.log('WaterlineLoader: tearing down...');
-        return _destroyModel(loadedModels, _.keys(loadedModels), done);
-      };
-      _destroyModel = function(models, modelNamesArray, done) {
-        return models[modelNamesArray.pop()].destroy().then((function(_this) {
-          return function() {
-            if (modelNamesArray.length === 0) {
-              return orm.teardown(done);
-            } else {
-              return _destroyModel(models, modelNamesArray, done);
-            }
-          };
-        })(this));
-      };
-      _loadModels = function(models) {
-        var i, len, model, modelDefinition, modelFileName;
-        for (i = 0, len = models.length; i < len; i++) {
-          model = models[i];
-          modelFileName = _.isString(model) ? model : model.fileName;
-          modelDefinition = require(CWD + "/api/models/" + modelFileName);
-          if (_.isFunction(modelDefinition)) {
-            if (model.afterLoadFilter != null) {
-              modelDefinition = model.afterLoadFilter(modelDefinition);
-            } else {
-              modelDefinition = modelDefinition();
-            }
+    };
+    this.teardown = function(done) {
+      console.log('WaterlineLoader: tearing down...');
+      return _destroyModel(loadedModels, _.keys(loadedModels), done);
+    };
+    _destroyModel = function(models, modelNamesArray, done) {
+      return models[modelNamesArray.pop()].destroy().then((function(_this) {
+        return function() {
+          if (modelNamesArray.length === 0) {
+            return orm.teardown(done);
+          } else {
+            return _destroyModel(models, modelNamesArray, done);
           }
-          _loadModelIntoCollection({
-            name: modelFileName,
-            definition: modelDefinition
-          });
+        };
+      })(this));
+    };
+    _loadModels = function(models) {
+      var i, len, model, modelDefinition, modelFileName;
+      for (i = 0, len = models.length; i < len; i++) {
+        model = models[i];
+        modelFileName = _.isString(model) ? model : model.fileName;
+        modelDefinition = require(CWD + "/api/models/" + modelFileName);
+        if (_.isFunction(modelDefinition)) {
+          if (model.afterLoadFilter != null) {
+            modelDefinition = model.afterLoadFilter(modelDefinition);
+          } else {
+            modelDefinition = modelDefinition();
+          }
         }
-        return this;
-      };
-      _loadModelIntoCollection = function(model) {
-        var waterlineCollection, waterlineModel;
-        waterlineModel = _.defaults(model.definition, {
-          identity: model.name,
-          tableName: model.name
-        }, defaultModel);
-        waterlineCollection = Waterline.Collection.extend(waterlineModel);
-        orm.loadCollection(waterlineCollection);
-        return namesHashMap[model.name.toLowerCase()] = model.name;
-      };
-      return _getOriginalName = function(lowerCaseName) {
-        return namesHashMap[lowerCaseName];
-      };
+        _loadModelIntoCollection({
+          name: modelFileName,
+          definition: modelDefinition
+        });
+      }
+      return this;
+    };
+    _loadModelIntoCollection = function(model) {
+      var waterlineCollection, waterlineModel;
+      waterlineModel = _.defaults(model.definition, {
+        identity: model.name,
+        tableName: model.name
+      }, defaultModel);
+      waterlineCollection = Waterline.Collection.extend(waterlineModel);
+      orm.loadCollection(waterlineCollection);
+      return namesHashMap[model.name.toLowerCase()] = model.name;
+    };
+    return _getOriginalName = function(lowerCaseName) {
+      return namesHashMap[lowerCaseName];
     };
   });
 
