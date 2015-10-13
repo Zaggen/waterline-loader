@@ -31,13 +31,6 @@
         memory: {
           adapter: 'memory'
         },
-        testMysqlServer: {
-          adapter: 'sails-mysql',
-          host: 'localhost',
-          user: 'root',
-          password: '',
-          database: 'test_artnexus'
-        },
         localDiskDb: {
           adapter: 'sails-disk'
         }
@@ -50,8 +43,14 @@
       connection: 'testMysqlServer'
     };
     namesHashMap = {};
-    return this.init = function(models, done) {
-      var _getOriginalName, _loadModelIntoCollection, _loadModels;
+    return this.init = function(options, done) {
+      var _destroyModel, _getOriginalName, _loadModelIntoCollection, _loadModels, models;
+      if (options == null) {
+        options = {};
+      }
+      models = options.models;
+      delete options.models;
+      config = _.extend(config, options);
       _loadModels(models);
       orm.initialize(config, function(err, orm) {
         var lowerCaseName, model, ref;
@@ -71,20 +70,25 @@
       });
       this.teardown = function(done) {
         console.log('WaterlineLoader: tearing down...');
-        return async(function() {
-          var model, modelName;
-          for (modelName in loadedModels) {
-            model = loadedModels[modelName];
-            await(model.destroy());
-          }
-          return orm.teardown(done);
-        })();
+        return _destroyModel(loadedModels, _.keys(loadedModels), done);
+      };
+      _destroyModel = function(models, modelNamesArray, done) {
+        return models[modelNamesArray.pop()].destroy().then((function(_this) {
+          return function() {
+            if (modelNamesArray.length === 0) {
+              return orm.teardown(done);
+            } else {
+              return _destroyModel(models, modelNamesArray, done);
+            }
+          };
+        })(this));
       };
       _loadModels = function(models) {
-        var i, len, model, modelDefinition;
+        var i, len, model, modelDefinition, modelFileName;
         for (i = 0, len = models.length; i < len; i++) {
           model = models[i];
-          modelDefinition = require(CWD + "/api/models/" + model.fileName);
+          modelFileName = _.isString(model) ? model : model.fileName;
+          modelDefinition = require(CWD + "/api/models/" + modelFileName);
           if (_.isFunction(modelDefinition)) {
             if (model.afterLoadFilter != null) {
               modelDefinition = model.afterLoadFilter(modelDefinition);
@@ -93,7 +97,7 @@
             }
           }
           _loadModelIntoCollection({
-            name: model.fileName,
+            name: modelFileName,
             definition: modelDefinition
           });
         }
