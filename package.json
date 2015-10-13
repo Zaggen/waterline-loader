@@ -1,0 +1,32 @@
+{
+  "name": "waterline-loader",
+  "version": "0.0.1",
+  "description": "Module to load sails.js model as waterline collections, to be used on unit testing a sails.js appplication",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zaggen/waterline-loader.git"
+  },
+  "keywords": [
+    "sails.js",
+    "waterline",
+    "testing"
+  ],
+  "author": "zaggen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Zaggen/waterline-loader/issues"
+  },
+  "homepage": "https://github.com/Zaggen/waterline-loader#readme",
+  "dependencies": {
+    "def-inc": "^0.5.4",
+    "lodash": "^3.10.1",
+    "sails-disk": "^0.10.8",
+    "sails-memory": "^0.10.5",
+    "sails-mysql": "^0.11.0",
+    "waterline": "^0.10.26"
+  }
+}
