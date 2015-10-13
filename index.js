@@ -39,12 +39,13 @@
       },
       defaults: {
         migrate: 'drop'
+      },
+      defaultModelConf: {
+        connection: 'memory'
       }
     };
-    defaultModel = {
-      connection: 'testMysqlServer'
-    };
     namesHashMap = {};
+    defaultModel = null;
     this.init = function(options, done) {
       var models;
       if (options == null) {
@@ -52,7 +53,9 @@
       }
       models = options.models;
       delete options.models;
-      config = _.extend(config, options);
+      config = _.merge(config, options);
+      defaultModel = config.defaultModelConf;
+      delete config.defaultModelConf;
       _loadModels(models);
       return orm.initialize(config, function(err, orm) {
         var lowerCaseName, model, ref;

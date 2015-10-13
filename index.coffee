@@ -41,17 +41,18 @@ waterlineLoader = def.Module ->
     defaults:
       migrate: 'drop'
 
-  defaultModel =
-    connection: 'testMysqlServer'
-
-  #models = ['NewsEntry', 'News', 'Image']
+    defaultModelConf:
+      connection: 'memory'
 
   namesHashMap = {}
+  defaultModel = null
 
   @init = (options = {}, done)->
     models = options.models
     delete options.models
-    config = _.extend(config, options)
+    config = _.merge(config, options)
+    defaultModel = config.defaultModelConf
+    delete config.defaultModelConf
 
     ####################################
     # START WATERLINE
