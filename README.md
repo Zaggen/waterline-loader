@@ -4,18 +4,18 @@ A module to load waterline Collections and turn them into globals, mainly for un
 
 ### Usage Example (CoffeeScript)
 
-waterlineLoader = require('waterlineLoader')
+
 ```coffee
 # test/mochaBootstrap.coffee
 
-waterlineLoader = require('./waterlineLoader')
+waterlineLoader = require('waterlineLoader')
 
 before (done)->
   @timeout(8000)
   config =
     # Add a list of all the sails.js modules (POJOs) you want to
     # convert into sails models (waterline collections) globals.
-    models:['News', 'Tag', 'Image', NewsCategory', 'Gallery', 'Artist', 'User']
+    models:['News', 'Tag', 'Image', 'NewsCategory', 'Gallery', 'Artist', 'User']
 
   waterlineLoader.init(models, done)
 
@@ -56,13 +56,11 @@ before (done)->
         afterLoadFilter: (injector)->
           injector({thumbnails: require("#{CWD}/test/mocks/thumbnails")})
       },
-      NewsCategory',
+      'NewsCategory',
       'Gallery',
       'Artist',
       'User'
     ]
-
-    waterlineLoader.init(config, done)
 
   waterlineLoader.init(models, done)
 
