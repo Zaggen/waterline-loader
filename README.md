@@ -29,7 +29,7 @@ after (done)->
 ```coffee
 # test/mochaBootstrap.coffee
 
-waterlineLoader = require('./waterlineLoader')
+waterlineLoader = require('waterlineLoader')
 
 before (done)->
   @timeout(8000)
