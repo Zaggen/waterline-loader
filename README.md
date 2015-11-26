@@ -68,3 +68,5 @@ after (done)->
   @timeout(8000)
   waterlineLoader.teardown(done)
 ```
+
+Then just use your model globals as you would if you were lifting sails for testing
