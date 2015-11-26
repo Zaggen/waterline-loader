@@ -1,7 +1,7 @@
 # Dependencies
 _ = require('lodash')
 Waterline = require('waterline')
-def = require('def-inc')
+def = require('def-type')
 
 # Require any waterline compatible adapters here
 memoryAdapter = require('sails-memory')
