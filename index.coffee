@@ -66,6 +66,28 @@ waterlineLoader = def.Module ->
       loadedModels = orm.collections # We want to manually remove all records later in the teardown
 
       for lowerCaseName, model of orm.collections
+        # Bind context for models
+        # (this (breaks?)allows usage with tools like `async`)
+        #_.bindAll(thisModel);
+
+        # Derive information about this model's associations from its schema
+        # and attach/expose the metadata as `SomeModel.associations` (an array)
+        # This allows us to use methods like .populateAll()
+        model.associations = _.reduce( model.attributes,  (associatedWith, attrDef, attrName)->
+          if typeof attrDef is 'object' && (attrDef.model or attrDef.collection)
+            assoc =
+              alias: attrName,
+              type: attrDef.model ? 'model' : 'collection'
+            if (attrDef.model)
+              assoc.model = attrDef.model
+            if (attrDef.collection)
+              assoc.collection = attrDef.collection
+            if (attrDef.via)
+              assoc.via = attrDef.via
+            associatedWith.push(assoc)
+          return associatedWith
+        , [])
+
         # We do not want to add association models (junction tables) to the global scope
         # so we make a little check, since those model names have a double underscore on them.
         if lowerCaseName.indexOf('__') is -1
