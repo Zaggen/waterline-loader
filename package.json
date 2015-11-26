@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/Zaggen/waterline-loader#readme",
   "dependencies": {
-    "def-inc": "^0.5.4",
+    "def-type": "^0.5.4",
     "lodash": "^3.10.1",
     "sails-disk": "^0.10.8",
     "sails-memory": "^0.10.5",
