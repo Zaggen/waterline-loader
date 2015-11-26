@@ -1,6 +1,6 @@
 {
   "name": "waterline-loader",
-  "version": "0.0.51",
+  "version": "0.0.6",
   "description": "Module to load sails.js model as waterline collections, to be used on unit testing a sails.js appplication",
   "main": "index.js",
   "scripts": {
@@ -13,7 +13,8 @@
   "keywords": [
     "sails.js",
     "waterline",
-    "testing"
+    "testing",
+    "orm"
   ],
   "author": "zaggen",
   "license": "ISC",
