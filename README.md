@@ -6,7 +6,7 @@ A module to load waterline Collections and turn them into globals, mainly for un
 
 
 ```javascript
-// test/mochaBootstrap.coffee
+// test/mochaBootstrap.js
 
 var waterlineLoader = require('waterlineLoader');
 
@@ -28,7 +28,7 @@ after(function(done){
 ### Example 2
 
 ```javascript
-// test/mochaBootstrap.coffee
+// test/mochaBootstrap.js
 
 var waterlineLoader = require('waterlineLoader')
 
