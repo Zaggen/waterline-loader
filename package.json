@@ -1,6 +1,6 @@
 {
   "name": "waterline-loader",
-  "version": "0.0.7",
+  "version": "0.0.7.1",
   "description": "Module to load sails.js model as waterline collections, to be used on unit testing a sails.js appplication",
   "main": "index.js",
   "scripts": {
