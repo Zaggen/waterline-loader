@@ -52,6 +52,11 @@ waterlineLoader = def.Module ->
     delete options.models
     config = _.merge(config, options)
     defaultModel = config.defaultModelConf
+    attachTo =
+      if options.attachTo?
+        if _.isArray(options.attachTo) then options.attachTo else [options.attachTo]
+      else
+        [global]
     delete config.defaultModelConf
 
     ####################################
@@ -93,6 +98,8 @@ waterlineLoader = def.Module ->
         if lowerCaseName.indexOf('__') is -1
           #console.log "Adding #{lowerCaseName} to the global scope"
           global[_getOriginalName(lowerCaseName)] = model
+          for obj in attachTo
+            obj[_getOriginalName(lowerCaseName)] = model
       done()
 
   @teardown = (done)->
