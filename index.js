@@ -47,7 +47,7 @@
     namesHashMap = {};
     defaultModel = null;
     this.init = function(options, done) {
-      var attachTo, models;
+      var attachModelsTo, models;
       if (options == null) {
         options = {};
       }
@@ -55,7 +55,7 @@
       delete options.models;
       config = _.merge(config, options);
       defaultModel = config.defaultModelConf;
-      attachTo = options.attachTo != null ? _.isArray(options.attachTo) ? options.attachTo : [options.attachTo] : [global];
+      attachModelsTo = options.attachModelsTo != null ? _.isArray(options.attachModelsTo) ? options.attachModelsTo : [options.attachModelsTo] : [global];
       delete config.defaultModelConf;
       _loadModels(models);
       return orm.initialize(config, function(err, orm) {
@@ -91,8 +91,8 @@
             return associatedWith;
           }, []);
           if (lowerCaseName.indexOf('__') === -1) {
-            for (i = 0, len = attachTo.length; i < len; i++) {
-              obj = attachTo[i];
+            for (i = 0, len = attachModelsTo.length; i < len; i++) {
+              obj = attachModelsTo[i];
               obj[_getOriginalName(lowerCaseName)] = model;
             }
           }

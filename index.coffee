@@ -52,9 +52,9 @@ waterlineLoader = def.Module ->
     delete options.models
     config = _.merge(config, options)
     defaultModel = config.defaultModelConf
-    attachTo =
-      if options.attachTo?
-        if _.isArray(options.attachTo) then options.attachTo else [options.attachTo]
+    attachModelsTo =
+      if options.attachModelsTo?
+        if _.isArray(options.attachModelsTo) then options.attachModelsTo else [options.attachModelsTo]
       else
         [global]
     delete config.defaultModelConf
@@ -97,7 +97,7 @@ waterlineLoader = def.Module ->
         # so we make a little check, since those model names have a double underscore on them.
         if lowerCaseName.indexOf('__') is -1
           #console.log "Adding #{lowerCaseName} to the global scope"
-          for obj in attachTo
+          for obj in attachModelsTo
             obj[_getOriginalName(lowerCaseName)] = model
       done()
 
