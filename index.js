@@ -91,7 +91,6 @@
             return associatedWith;
           }, []);
           if (lowerCaseName.indexOf('__') === -1) {
-            global[_getOriginalName(lowerCaseName)] = model;
             for (i = 0, len = attachTo.length; i < len; i++) {
               obj = attachTo[i];
               obj[_getOriginalName(lowerCaseName)] = model;

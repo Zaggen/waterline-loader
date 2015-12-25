@@ -97,7 +97,6 @@ waterlineLoader = def.Module ->
         # so we make a little check, since those model names have a double underscore on them.
         if lowerCaseName.indexOf('__') is -1
           #console.log "Adding #{lowerCaseName} to the global scope"
-          global[_getOriginalName(lowerCaseName)] = model
           for obj in attachTo
             obj[_getOriginalName(lowerCaseName)] = model
       done()
