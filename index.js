@@ -52,11 +52,11 @@
       if (options == null) {
         options = {};
       }
-      models = options.models;
+      models = options.models || options.collections;
       delete options.models;
       config = _.merge(config, options);
       defaultModel = config.defaultModelConf;
-      attachModelsTo = options.attachModelsTo != null ? _.isArray(options.attachModelsTo) ? options.attachModelsTo : [options.attachModelsTo] : [global];
+      attachModelsTo = config.attachModelsTo != null ? _.isArray(config.attachModelsTo) ? config.attachModelsTo : [config.attachModelsTo] : [global];
       delete config.defaultModelConf;
       _loadModels(models);
       return orm.initialize(config, function(err, orm) {
