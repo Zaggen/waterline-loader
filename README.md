@@ -1,6 +1,42 @@
 # waterline-loader
 A module to load waterline Collections and turn them into globals, mainly for unit testing sails.js
 
+### API
+`.init(config = {}, callback)`
+- ***config:***
+Pass an object to configure the module, it accepts the following properties:
+
+  - `models` (Array: [String | Object]): Here you define the collections you want
+  to load into waterline, defined by either its fileName as a string, or an object in
+  case you want do do some processing after the object is loaded, this is usefull for
+  unit testing. Please note that each model should be defined as an object literal, just
+  as we define models in sails js and they are expected to be store on `api/models` path.
+  e.g: `{models: ['News', 'Tag']}`
+  - `collections` (Array: [String | Object]): This is just an alias for models, since waterline
+  uses the word collections, and sails uses models, you can use whichever you see fit to your project.
+  - `adapters` (Object {'adapterName': Adapter}): Here you specify the adapters you want to use. This
+  property if defined, will be merged with the following defaults:
+  
+  ```{
+       'default': memoryAdapter,
+       'memory': memoryAdapter,
+       'sails-disk': diskAdapter,
+       'sails-mysql': MySqlAdapter
+  }```
+  
+  - `connections` (Object {'connectionName': {adapter: 'adapterName'}}): Define your custom connections here,
+  or leave it blank to use the defaults ```{memory: {adapter: 'memory'}, localDiskDb: {adapter: 'sails-disk'}```
+  - `defaultModelConf` (Object): Here you specify the defaults for all your models, this is specially useful when
+  you are also setting custom connections, so you can link them to your models, like this `{connection: 'memory'}`
+  - `lookUpPath` (String): In Case you have a different folder structure that what sails uses (`CWD + '/api/models'`),
+  you can specify that here, so all models/collections will be searched on the specified path, e.g `CWD + '/collections'`
+  
+- ***callback:***: The function that will be called once the models/collections are properly parsed and loaded into
+waterline
+
+`.teardown(callback)`
+- ***callback:***: The function that will be called once the models/collections are properly parsed and loaded into
+waterline
 
 ### Usage Example
 
@@ -16,7 +52,7 @@ before(function(done){
   // convert into sails models (waterline collections) globals.
   var config = {models: ['News', 'Tag', 'Image', 'NewsCategory', 'Gallery', 'Artist', 'User']}  
 
-  waterlineLoader.init(models, done);
+  waterlineLoader.init(config, done);
 });  
 
 after(function(done){
@@ -70,7 +106,7 @@ before(function(done){
     attachModelsTo: [global, global.sails.models] // defaults to attachModelsTo: global
   };
   
-  waterlineLoader.init(models, done);
+  waterlineLoader.init(config, done);
 });  
 
 after(function(done){
@@ -81,3 +117,6 @@ after(function(done){
 ```
 
 Then just use your model globals as you would if you were lifting sails for testing
+
+Note: If your models have associations between each other, you must include all related models/collections
+in the passed list, so waterline can build the relationships.
