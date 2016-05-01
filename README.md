@@ -16,13 +16,13 @@ Pass an object to configure the module, it accepts the following properties:
   uses the word collections, and sails uses models, you can use whichever you see fit to your project.
   - `adapters` (Object {'adapterName': Adapter}): Here you specify the adapters you want to use. This
   property if defined, will be merged with the following defaults:
-  
-  ```{
+
+    ```{
        'default': memoryAdapter,
        'memory': memoryAdapter,
        'sails-disk': diskAdapter,
        'sails-mysql': MySqlAdapter
-  }```
+    }```
   
   - `connections` (Object {'connectionName': {adapter: 'adapterName'}}): Define your custom connections here,
   or leave it blank to use the defaults ```{memory: {adapter: 'memory'}, localDiskDb: {adapter: 'sails-disk'}```
