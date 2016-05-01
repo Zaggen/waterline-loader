@@ -46,6 +46,8 @@ waterlineLoader = def.Module ->
     defaultModelConf:
       connection: 'memory'
 
+    useLog: true
+
   namesHashMap = {}
   defaultModel = null
 
@@ -68,7 +70,8 @@ waterlineLoader = def.Module ->
 
     # Start Waterline passing adapters in
     orm.initialize config, (err, orm)->
-      console.log 'WaterlineLoader: Initializing ORM'
+      if config.useLog
+        console.log 'WaterlineLoader: Initializing ORM'
       if(err) then throw err
       loadedModels = orm.collections # We want to manually remove all records later in the teardown
 
@@ -104,7 +107,8 @@ waterlineLoader = def.Module ->
       done()
 
   @teardown = (done)->
-    console.log 'WaterlineLoader: tearing down...'
+    if config.useLog
+      console.log 'WaterlineLoader: tearing down...'
     # This method calls itself until all models are destroyed
     _destroyModel(loadedModels, _.keys(loadedModels), done)
 

@@ -43,7 +43,8 @@
       lookUpPath: CWD + "/api/models",
       defaultModelConf: {
         connection: 'memory'
-      }
+      },
+      useLog: true
     };
     namesHashMap = {};
     defaultModel = null;
@@ -61,7 +62,9 @@
       _loadModels(models);
       return orm.initialize(config, function(err, orm) {
         var i, len, lowerCaseName, model, obj, ref;
-        console.log('WaterlineLoader: Initializing ORM');
+        if (config.useLog) {
+          console.log('WaterlineLoader: Initializing ORM');
+        }
         if (err) {
           throw err;
         }
@@ -102,7 +105,9 @@
       });
     };
     this.teardown = function(done) {
-      console.log('WaterlineLoader: tearing down...');
+      if (config.useLog) {
+        console.log('WaterlineLoader: tearing down...');
+      }
       return _destroyModel(loadedModels, _.keys(loadedModels), done);
     };
     _destroyModel = function(models, modelNamesArray, done) {
