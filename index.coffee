@@ -50,7 +50,7 @@ waterlineLoader = def.Module ->
   defaultModel = null
 
   @init = (options = {}, done)->
-    models = options.models
+    models = options.models or options.collections
     delete options.models
     config = _.merge(config, options)
     defaultModel = config.defaultModelConf
