@@ -40,6 +40,7 @@
       defaults: {
         migrate: 'drop'
       },
+      lookUpPath: CWD + "/api/models",
       defaultModelConf: {
         connection: 'memory'
       }
@@ -120,7 +121,7 @@
       for (i = 0, len = models.length; i < len; i++) {
         model = models[i];
         modelFileName = _.isString(model) ? model : model.fileName;
-        modelDefinition = require(CWD + "/api/models/" + modelFileName);
+        modelDefinition = require(config.lookUpPath + "/" + modelFileName);
         if (_.isFunction(modelDefinition)) {
           if (model.afterLoadFilter != null) {
             modelDefinition = model.afterLoadFilter(modelDefinition);
