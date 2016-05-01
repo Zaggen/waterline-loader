@@ -41,6 +41,8 @@ waterlineLoader = def.Module ->
     defaults:
       migrate: 'drop'
 
+    lookUpPath: "#{CWD}/api/models"
+
     defaultModelConf:
       connection: 'memory'
 
@@ -118,7 +120,7 @@ waterlineLoader = def.Module ->
     for model in models
       # Models can be simple strings entries in the array, or objects
       modelFileName = if _.isString(model) then model else model.fileName
-      modelDefinition = require("#{CWD}/api/models/#{modelFileName}")
+      modelDefinition = require("#{config.lookUpPath}/#{modelFileName}")
 
       # Useful if sails models were define via commonjs-injector
       if _.isFunction(modelDefinition)
