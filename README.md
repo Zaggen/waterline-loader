@@ -30,6 +30,7 @@ Pass an object to configure the module, it accepts the following properties:
   you are also setting custom connections, so you can link them to your models, like this `{connection: 'memory'}`
   - `lookUpPath` (String): In Case you have a different folder structure that what sails uses (`CWD + '/api/models'`),
   you can specify that here, so all models/collections will be searched on the specified path, e.g `CWD + '/collections'`
+  - `useLog` (Boolean): Shows a couple of logs if set to true
   
 - ***callback:***: The function that will be called once the models/collections are properly parsed and loaded into
 waterline
