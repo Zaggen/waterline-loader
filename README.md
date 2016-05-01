@@ -3,6 +3,8 @@ A module to load waterline Collections and turn them into globals, mainly for un
 
 ### API
 `.init(config = {}, callback)`
+Loads the models/collections and attach them to the global object, or where you
+specify.
 - ***config:***
 Pass an object to configure the module, it accepts the following properties:
 
@@ -36,6 +38,7 @@ Pass an object to configure the module, it accepts the following properties:
 waterline
 
 `.teardown(callback)`
+Unloads the models and drops the tables created, this is why its important that you use a testing db
 - ***callback:***: The function that will be called once the models/collections are properly parsed and loaded into
 waterline
 
