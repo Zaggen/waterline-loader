@@ -55,8 +55,8 @@ waterlineLoader = def.Module ->
     config = _.merge(config, options)
     defaultModel = config.defaultModelConf
     attachModelsTo =
-      if options.attachModelsTo?
-        if _.isArray(options.attachModelsTo) then options.attachModelsTo else [options.attachModelsTo]
+      if config.attachModelsTo?
+        if _.isArray(config.attachModelsTo) then config.attachModelsTo else [config.attachModelsTo]
       else
         [global]
     delete config.defaultModelConf
