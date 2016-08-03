@@ -5,8 +5,6 @@ def = require('def-type')
 
 # Require any waterline compatible adapters here
 memoryAdapter = require('sails-memory')
-diskAdapter = require('sails-disk')
-MySqlAdapter = require('sails-mysql')
 # Instantiate a new instance of the ORM
 orm = new Waterline()
 loadedModels = null
@@ -26,17 +24,12 @@ waterlineLoader = def.Module ->
     adapters:
       'default': memoryAdapter
       'memory': memoryAdapter
-      'sails-disk': diskAdapter
-      'sails-mysql': MySqlAdapter
 
     # Build Connections Config
     # Setup connections using the named adapter configs
     connections:
       memory:
         adapter: 'memory'
-
-      localDiskDb:
-        adapter: 'sails-disk'
 
     defaults:
       migrate: 'drop'
