@@ -21,9 +21,7 @@ Pass an object to configure the module, it accepts the following properties:
 
     ```{
        'default': memoryAdapter,
-       'memory': memoryAdapter,
-       'sails-disk': diskAdapter,
-       'sails-mysql': MySqlAdapter
+       'memory': memoryAdapter
     }```
   
   - `connections` (Object {'connectionName': {adapter: 'adapterName'}}): Define your custom connections here,
