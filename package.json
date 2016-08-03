@@ -1,6 +1,6 @@
 {
   "name": "waterline-loader",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "Module to load sails.js model as waterline collections, to be used on unit testing a sails.js appplication",
   "main": "index.js",
   "scripts": {
@@ -25,9 +25,7 @@
   "dependencies": {
     "def-type": "^0.5.4",
     "lodash": "^3.10.1",
-    "sails-disk": "^0.10.8",
     "sails-memory": "^0.10.5",
-    "sails-mysql": "^0.11.0",
     "waterline": "^0.10.26"
   }
 }
