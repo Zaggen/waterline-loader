@@ -116,7 +116,8 @@ waterlineLoader = def.Module ->
   _loadModels = (models)->
     for model in models
       # Models can be simple strings entries in the array, or objects
-      modelFileName = if _.isString(model) then model else model.fileName
+      modelFileName = if _.isString(model) then model else (model.fileName or model.path)
+      modelName =  model.alias or modelFileName
       modelDefinition = require("#{config.lookUpPath}/#{modelFileName}")
 
       # Useful if sails models were define via commonjs-injector
@@ -126,7 +127,7 @@ waterlineLoader = def.Module ->
         else
           modelDefinition = modelDefinition()
 
-      _loadModelIntoCollection(name: modelFileName, definition: modelDefinition)
+      _loadModelIntoCollection(name: modelName, definition: modelDefinition)
     return this
 
   _loadModelIntoCollection = (model)->
