@@ -114,10 +114,11 @@
       })(this));
     };
     _loadModels = function(models) {
-      var i, len, model, modelDefinition, modelFileName;
+      var i, len, model, modelDefinition, modelFileName, modelName;
       for (i = 0, len = models.length; i < len; i++) {
         model = models[i];
-        modelFileName = _.isString(model) ? model : model.fileName;
+        modelFileName = _.isString(model) ? model : model.fileName || model.path;
+        modelName = model.alias || modelFileName;
         modelDefinition = require(config.lookUpPath + "/" + modelFileName);
         if (_.isFunction(modelDefinition)) {
           if (model.afterLoadFilter != null) {
@@ -127,7 +128,7 @@
           }
         }
         _loadModelIntoCollection({
-          name: modelFileName,
+          name: modelName,
           definition: modelDefinition
         });
       }
