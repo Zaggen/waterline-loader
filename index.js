@@ -47,7 +47,7 @@
       models = options.models || options.collections;
       delete options.models;
       delete options.collections;
-      config = _.merge(config, options);
+      config = _.defaults(options, config);
       defaultModel = config.defaultModelConf;
       attachModelsTo = config.attachModelsTo != null ? _.isArray(config.attachModelsTo) ? config.attachModelsTo : [config.attachModelsTo] : [global];
       delete config.defaultModelConf;
