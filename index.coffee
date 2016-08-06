@@ -97,7 +97,7 @@ waterlineLoader = def.Module ->
           #console.log "Adding #{lowerCaseName} to the global scope"
           for obj in attachModelsTo
             obj[_getOriginalName(lowerCaseName)] = model
-      done()
+      done(orm.collections)
 
   @teardown = (done)->
     if config.useLog
