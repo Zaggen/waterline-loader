@@ -93,7 +93,7 @@
             }
           }
         }
-        return done();
+        return done(orm.collections);
       });
     };
     this.teardown = function(done) {
