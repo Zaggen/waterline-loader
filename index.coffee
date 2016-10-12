@@ -44,7 +44,7 @@ waterlineLoader = def.Module ->
   namesHashMap = {}
   defaultModel = null
 
-  @init = (options = {}, done)->
+  @init = (options = {}, callback)->
     models = options.models or options.collections
     delete options.models; delete options.collections
     config = _.defaults(options, config)
@@ -63,9 +63,8 @@ waterlineLoader = def.Module ->
 
     # Start Waterline passing adapters in
     orm.initialize config, (err, orm)->
-      if config.useLog
-        console.log 'WaterlineLoader: Initializing ORM'
-      if(err) then throw err
+      console.log 'WaterlineLoader: Initializing ORM' if config.useLog
+      if(err) then return callback(err)
       loadedModels = orm.collections # We want to manually remove all records later in the teardown
 
       for lowerCaseName, model of orm.collections
@@ -97,21 +96,21 @@ waterlineLoader = def.Module ->
           #console.log "Adding #{lowerCaseName} to the global scope"
           for obj in attachModelsTo
             obj[_getOriginalName(lowerCaseName)] = model
-      done(orm.collections)
+      callback(orm.collections)
 
-  @teardown = (done)->
+  @teardown = (callback)->
     if config.useLog
       console.log 'WaterlineLoader: tearing down...'
     # This method calls itself until all models are destroyed
-    _destroyModel(loadedModels, _.keys(loadedModels), done)
+    _destroyModel(loadedModels, _.keys(loadedModels), callback)
 
 
-  _destroyModel = (models, modelNamesArray, done)->
+  _destroyModel = (models, modelNamesArray, callback)->
     models[modelNamesArray.pop()].destroy().then =>
       if modelNamesArray.length is 0
-        orm.teardown(done)
+        orm.teardown(callback)
       else
-        _destroyModel(models, modelNamesArray, done)
+        _destroyModel(models, modelNamesArray, callback)
 
   _loadModels = (models)->
     for model in models
